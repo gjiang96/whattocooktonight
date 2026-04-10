@@ -10,6 +10,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'simplecov'
+require 'webmock/rspec'
 SimpleCov.start 'rails' do
   add_filter '/spec/'
   minimum_coverage 90
@@ -40,7 +41,10 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 Shoulda::Matchers.configure do |config|
-  config.integrate { |with| with.test_framework(:rspec).library(:rails) }
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
 end
 
 RSpec.configure do |config|

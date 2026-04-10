@@ -57,8 +57,11 @@ This project enforces a strict layered architecture. Keep layers separate — no
 **Infrastructure Layer** (`app/infrastructure/`)
 - All I/O: database, external APIs, file system
 - Repositories translate between domain objects and ActiveRecord/external responses
-- External API clients live here (e.g. `Infrastructure::SpoonacularClient`)
+- External API clients live here (e.g. `ApiClients::SpoonacularClient`)
 - Domain code never instantiates infrastructure directly — always injected
+- Note: Rails' Zeitwerk autoloader uses the immediate subdirectory of `app/` as the namespace root.
+  Files in `app/infrastructure/api_clients/` resolve to `ApiClients::*` (not `Infrastructure::ApiClients::*`).
+  The directory structure enforces the layer boundary; the Ruby module prefix reflects the type, not the layer.
 
 **Interface Layer** (controllers, jobs, serializers)
 - Controllers are thin: validate params, call one use case, render result
@@ -220,6 +223,29 @@ export const MealPlanScreen = () => {
 - Services get unit tests with mocked `fetch`/axios
 - No testing implementation details — test behavior from the user's perspective
 - No `act()` wrappers manually unless absolutely necessary — prefer `waitFor`
+
+---
+
+## Living Documentation
+
+Keep `docs/` up to date as code changes. Documentation is part of the definition of done — a feature isn't complete until the relevant doc reflects it.
+
+### What to document and where
+
+| What changed | Where to update |
+|---|---|
+| New external service integrated | `docs/external-services.md` |
+| New API endpoint added or changed | `docs/api.md` |
+| Architecture decision made | `docs/architecture.md` |
+| New technology or major dependency added | `docs/tech-stack.md` |
+| Setup steps change (new env var, new dependency) | `docs/setup.md` |
+
+### Rules
+- **Document the why, not the how.** Code explains how; docs explain why a choice was made and what behaviour to expect.
+- **External services always get a doc entry** — include what it's used for, which endpoint(s), auth method, rate limits, and any gotchas.
+- **New env vars must appear in both `.env.example` and `docs/setup.md`** the same day they're introduced.
+- **Don't document the obvious.** A method named `fetch_random_recipe` doesn't need a comment. An unusual design decision does.
+- **Update, don't append.** Edit the existing entry rather than adding a duplicate section below it.
 
 ---
 
