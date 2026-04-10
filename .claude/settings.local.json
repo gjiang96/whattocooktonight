@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/ruby)",
+      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/rails-best-practices)",
+      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/react-native)",
+      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/react-native-performance)"
+    ]
+  }
+}
