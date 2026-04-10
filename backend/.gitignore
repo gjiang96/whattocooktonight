@@ -1,0 +1,29 @@
+# Rails defaults
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/storage/*
+!/storage/.keep
+/public/assets
+.byebug_history
+
+# Bundler
+/.bundle
+/vendor/bundle
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# Credentials
+/config/credentials.yml.enc
+/config/master.key
+/config/*.key
+
+# Test artifacts
+/coverage/

@@ -9,7 +9,17 @@
       "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/ruby)",
       "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/rails-best-practices)",
       "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/react-native)",
-      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/react-native-performance)"
+      "Bash(mkdir -p /Users/garyjiang/Development/whattocooktonight/.claude/skills/react-native-performance)",
+      "Bash(gh repo:*)",
+      "Bash(ruby --version)",
+      "Bash(gem --version)",
+      "Bash(rails --version)",
+      "Bash(rbenv versions:*)",
+      "Bash(rvm list:*)",
+      "Bash(asdf list:*)",
+      "Bash(brew --version)",
+      "Bash(brew install:*)",
+      "Bash(/usr/local/Cellar/ruby@3.3/3.3.11/bin/bundle install:*)"
     ]
   }
 }
