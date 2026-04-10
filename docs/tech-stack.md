@@ -48,6 +48,5 @@
 
 | Tool | Purpose |
 |------|---------|
-| rbenv (via Homebrew) | Ruby version management |
 | Homebrew | macOS package manager |
 | PostgreSQL 16 (Homebrew) | Local database server (`brew services start postgresql@16`) |
