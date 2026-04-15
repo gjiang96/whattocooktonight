@@ -26,9 +26,12 @@ updates:
           - minor
           - patch
 
-  # Keep GitHub Actions versions fresh
+  # Keep GitHub Actions versions fresh (minor/patch only — major bumps need manual review)
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
       day: monday
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

@@ -1,6 +1,16 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
+
+# SimpleCov must start before any application code is loaded.
+# In CI, eager_load=true causes all app code to load with the environment,
+# so starting here ensures coverage is tracked correctly in both local and CI.
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+  minimum_coverage 90
+end
+
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -9,12 +19,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'simplecov'
 require 'webmock/rspec'
-SimpleCov.start 'rails' do
-  add_filter '/spec/'
-  minimum_coverage 90
-end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
