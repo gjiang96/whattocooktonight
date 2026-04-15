@@ -21,7 +21,7 @@ The backend enforces four layers. Each layer only depends on the one directly be
 ┌─────────────────────────────────┐
 │         Interface Layer         │  Controllers, Serializers, Jobs
 ├─────────────────────────────────┤
-│        Application Layer        │  Use Cases (app/use_cases/)
+│        Application Layer        │  Services (app/services/)
 ├─────────────────────────────────┤
 │          Domain Layer           │  Entities, Value Objects (app/domain/)
 ├─────────────────────────────────┤
@@ -30,9 +30,9 @@ The backend enforces four layers. Each layer only depends on the one directly be
 ```
 
 ### Interface Layer (`app/controllers/`, `app/serializers/`)
-Receives HTTP requests, calls one use case, serialises the result. No business logic lives here.
+Receives HTTP requests, calls one service, serialises the result. No business logic lives here.
 
-### Application Layer (`app/use_cases/`)
+### Application Layer (`app/services/`)
 One class per business operation. Each exposes a single `#call` method and returns a `Result` (success/failure). Orchestrates domain objects and infrastructure — never performs I/O directly.
 
 ### Domain Layer (`app/domain/`)
