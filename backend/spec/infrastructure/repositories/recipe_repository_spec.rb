@@ -16,7 +16,7 @@ RSpec.describe Repositories::RecipeRepository do
       "readyInMinutes"      => 45,
       "servings"            => 3,
       "cuisines"            => [],
-      "diets"               => ["vegetarian"],
+      "diets"               => [ "vegetarian" ],
       "extendedIngredients" => [
         { "name" => "zucchini", "amount" => 2.0,  "unit" => "pcs" },
         { "name" => "flour",    "amount" => 0.5,  "unit" => "cup" },
@@ -30,7 +30,7 @@ RSpec.describe Repositories::RecipeRepository do
       before do
         allow(client).to receive(:fetch_random_recipe)
           .with(tags: [])
-          .and_return({ "recipes" => [raw_recipe] })
+          .and_return({ "recipes" => [ raw_recipe ] })
       end
 
       it "returns a success result" do
@@ -45,7 +45,7 @@ RSpec.describe Repositories::RecipeRepository do
         expect(recipe.title).to eq("Lemony Zucchini Fritters")
         expect(recipe.ready_in_minutes).to eq(45)
         expect(recipe.servings).to eq(3)
-        expect(recipe.diets).to eq(["vegetarian"])
+        expect(recipe.diets).to eq([ "vegetarian" ])
       end
 
       it "maps extendedIngredients to Ingredient value objects" do
@@ -60,7 +60,7 @@ RSpec.describe Repositories::RecipeRepository do
       it "passes tags through to the client" do
         allow(client).to receive(:fetch_random_recipe)
           .with(tags: %w[italian vegetarian])
-          .and_return({ "recipes" => [raw_recipe] })
+          .and_return({ "recipes" => [ raw_recipe ] })
 
         repo.fetch_random_recipe(tags: %w[italian vegetarian])
 
@@ -84,7 +84,7 @@ RSpec.describe Repositories::RecipeRepository do
       before do
         allow(client).to receive(:fetch_random_recipe)
           .with(tags: [])
-          .and_return({ "recipes" => [minimal_recipe] })
+          .and_return({ "recipes" => [ minimal_recipe ] })
       end
 
       it "defaults missing collections to empty arrays" do

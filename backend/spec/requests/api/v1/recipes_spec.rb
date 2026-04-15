@@ -16,7 +16,7 @@ RSpec.describe "GET /api/v1/recipes/random", type: :request do
           "readyInMinutes"      => 45,
           "servings"            => 3,
           "cuisines"            => [],
-          "diets"               => ["vegetarian"],
+          "diets"               => [ "vegetarian" ],
           "extendedIngredients" => [
             { "name" => "zucchini", "amount" => 2.0, "unit" => "pcs" }
           ]
@@ -49,7 +49,7 @@ RSpec.describe "GET /api/v1/recipes/random", type: :request do
       expect(body["recipe"]["title"]).to eq("Lemony Zucchini Fritters")
       expect(body["recipe"]["ready_in_minutes"]).to eq(45)
       expect(body["recipe"]["servings"]).to eq(3)
-      expect(body["recipe"]["diets"]).to eq(["vegetarian"])
+      expect(body["recipe"]["diets"]).to eq([ "vegetarian" ])
     end
 
     it "includes ingredients" do
