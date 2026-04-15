@@ -19,7 +19,8 @@
       "Bash(asdf list:*)",
       "Bash(brew --version)",
       "Bash(brew install:*)",
-      "Bash(/usr/local/Cellar/ruby@3.3/3.3.11/bin/bundle install:*)"
+      "Bash(/usr/local/Cellar/ruby@3.3/3.3.11/bin/bundle install:*)",
+      "Bash(/usr/local/opt/ruby@3.3/bin/bundle exec:*)"
     ]
   }
 }
