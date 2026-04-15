@@ -12,8 +12,6 @@ All responses are JSON. All endpoints are under `/api/v1/`.
 
 Returns a single randomly selected recipe with its full ingredient list.
 
-> **Status:** Planned — implemented in issue #7
-
 **Query parameters:**
 
 | Parameter | Type | Required | Description |
@@ -28,13 +26,13 @@ Returns a single randomly selected recipe with its full ingredient list.
     "title": "Farfalle with Peas, Ham and Cream",
     "image_url": "https://img.spoonacular.com/recipes/642583-556x370.jpg",
     "source_url": "https://www.foodista.com/recipe/farfalle",
-    "cuisine": "Italian",
-    "dietary_tags": [],
     "ready_in_minutes": 45,
     "servings": 4,
+    "cuisines": ["Italian"],
+    "diets": [],
     "ingredients": [
-      { "name": "farfalle pasta", "quantity": 200.0, "unit": "g" },
-      { "name": "peas", "quantity": 100.0, "unit": "g" }
+      { "name": "farfalle pasta", "amount": 200.0, "unit": "g" },
+      { "name": "peas", "amount": 100.0, "unit": "g" }
     ]
   }
 }
