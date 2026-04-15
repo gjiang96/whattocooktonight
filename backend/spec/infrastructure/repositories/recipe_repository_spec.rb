@@ -68,6 +68,33 @@ RSpec.describe Repositories::RecipeRepository do
       end
     end
 
+    context "when the response omits optional fields" do
+      let(:minimal_recipe) do
+        {
+          "id"             => 1,
+          "title"          => "Minimal",
+          "image"          => nil,
+          "sourceUrl"      => nil,
+          "readyInMinutes" => 30,
+          "servings"       => 2
+          # no cuisines, diets, or extendedIngredients
+        }
+      end
+
+      before do
+        allow(client).to receive(:fetch_random_recipe)
+          .with(tags: [])
+          .and_return({ "recipes" => [minimal_recipe] })
+      end
+
+      it "defaults missing collections to empty arrays" do
+        recipe = repo.fetch_random_recipe.value
+        expect(recipe.cuisines).to eq([])
+        expect(recipe.diets).to eq([])
+        expect(recipe.ingredients).to eq([])
+      end
+    end
+
     context "when the client raises an ExternalApiError" do
       before do
         allow(client).to receive(:fetch_random_recipe)

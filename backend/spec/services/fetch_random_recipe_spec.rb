@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe FetchRandomRecipe do
-  subject(:use_case) { described_class.new(recipe_repo: recipe_repo) }
+  subject(:service) { described_class.new(recipe_repo: recipe_repo) }
 
   let(:recipe_repo) { instance_double(Repositories::RecipeRepository) }
 
@@ -27,7 +27,7 @@ RSpec.describe FetchRandomRecipe do
       end
 
       it "returns a success result with the recipe" do
-        result = use_case.call
+        result = service.call
         expect(result.success?).to be true
         expect(result.value).to eq(recipe)
       end
@@ -43,7 +43,7 @@ RSpec.describe FetchRandomRecipe do
       end
 
       it "passes tags through to the repository" do
-        use_case.call(tags: %w[italian vegetarian])
+        service.call(tags: %w[italian vegetarian])
         expect(recipe_repo).to have_received(:fetch_random_recipe).with(tags: %w[italian vegetarian])
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe FetchRandomRecipe do
       end
 
       it "returns the failure result" do
-        result = use_case.call
+        result = service.call
         expect(result.success?).to be false
         expect(result.error).to eq("Spoonacular API returned 402")
       end
