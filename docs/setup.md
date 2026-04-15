@@ -60,7 +60,21 @@ bundle exec rails server
 
 API available at `http://localhost:3000`.
 
-### 7. Run the tests
+### 7. Verify it works
+
+With the server running, hit the recipes endpoint:
+
+```bash
+curl http://localhost:3000/api/v1/recipes/random
+```
+
+You should get back a JSON object with a random recipe, its ingredients, and dietary tags. You can also filter by cuisine or diet:
+
+```bash
+curl "http://localhost:3000/api/v1/recipes/random?tags=italian,vegetarian"
+```
+
+### 8. Run the tests
 
 ```bash
 bundle exec rspec
