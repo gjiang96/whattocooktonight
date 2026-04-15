@@ -7,9 +7,6 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - backend
     groups:
       # Bundle minor/patch bumps together to keep PR noise down.
       # Majors still open their own PR so they get a proper review.
@@ -35,6 +32,3 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    labels:
-      - dependencies
-      - ci
