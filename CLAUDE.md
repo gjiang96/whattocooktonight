@@ -79,32 +79,34 @@ app/
   domain/
     entities/            # Pure Ruby entity classes
     value_objects/       # Immutable value objects
-    services/            # Domain services
-  services/              # One file per service object
+    result.rb            # Shared Result struct (success?/value/error)
+  services/              # One file per business operation
   infrastructure/
-    repositories/        # ActiveRecord <-> Domain translation
+    repositories/        # Translate external/DB responses into domain objects
     api_clients/         # External HTTP clients
-  serializers/           # JSON serialization (jsonapi-serializer or alba)
-  workers/               # Sidekiq jobs (delegate to use cases)
+  serializers/           # Plain Ruby classes that shape JSON responses
 ```
 
 ### Models
-- ActiveRecord models are persistence objects only — treat them as the infrastructure layer
-- No business logic in models. Validations for DB integrity are acceptable.
-- Use models only inside repositories
+- No ActiveRecord models yet — this app currently proxies Spoonacular on demand.
+- When added, treat AR models as persistence objects only. No business logic. Use them only inside repositories.
 
 ### Controllers
 ```ruby
 # Good
-def create
-  result = GenerateMealPlan.new(repo: Repositories::RecipeRepository.new).call(params: meal_plan_params)
-  result.success? ? render_success(result.value) : render_error(result.error)
+def random
+  result = FetchRandomRecipe.new.call(tags: parsed_tags)
+  if result.success?
+    render json: { recipe: RecipeSerializer.call(result.value) }
+  else
+    render json: { error: "Recipe service unavailable" }, status: :service_unavailable
+  end
 end
 
 # Bad — business logic in controller
-def create
-  recipes = Recipe.where(cuisine: params[:cuisine]).sample(params[:days])
-  ...
+def random
+  response = Faraday.get("https://api.spoonacular.com/recipes/random", apiKey: ENV["SPOONACULAR_API_KEY"])
+  render json: JSON.parse(response.body)["recipes"].first
 end
 ```
 
@@ -118,8 +120,8 @@ Result = Struct.new(:success?, :value, :error, keyword_init: true)
 
 ### Value Objects
 - Freeze on initialize
-- Override `==` and `eql?` to compare by value
-- Example: `Ingredient` with name, quantity, unit
+- Override `==` and `eql?` to compare by value (and implement `hash` accordingly)
+- Example: `ValueObjects::Ingredient` with name, amount, unit
 
 ---
 

@@ -19,7 +19,7 @@ The backend enforces four layers. Each layer only depends on the one directly be
 
 ```
 ┌─────────────────────────────────┐
-│         Interface Layer         │  Controllers, Serializers, Jobs
+│         Interface Layer         │  Controllers, Serializers
 ├─────────────────────────────────┤
 │        Application Layer        │  Services (app/services/)
 ├─────────────────────────────────┤
@@ -31,33 +31,75 @@ The backend enforces four layers. Each layer only depends on the one directly be
 
 ### Interface Layer (`app/controllers/`, `app/serializers/`)
 Receives HTTP requests, calls one service, serialises the result. No business logic lives here.
+- `Api::V1::RecipesController` — wires the HTTP endpoint to the service
+- `RecipeSerializer` — converts a `Recipe` entity to the JSON response shape
 
 ### Application Layer (`app/services/`)
 One class per business operation. Each exposes a single `#call` method and returns a `Result` (success/failure). Orchestrates domain objects and infrastructure — never performs I/O directly.
+- `FetchRandomRecipe` — delegates to the recipe repository, returns a `Result`
 
 ### Domain Layer (`app/domain/`)
 Pure Ruby. No Rails, no HTTP, no database. Contains:
-- **Entities** — objects with identity (e.g. `Recipe`)
-- **Value Objects** — immutable, equality by value (e.g. `Ingredient`)
+- **Entities** — objects with identity (e.g. `Entities::Recipe`, identified by Spoonacular id)
+- **Value Objects** — immutable, equality by value (e.g. `ValueObjects::Ingredient`)
+- **`Result`** — a simple `Struct` returned by every service and repository. Lets callers branch on `success?` rather than rescuing exceptions for expected failures.
 
 ### Infrastructure Layer (`app/infrastructure/`)
-All I/O lives here — HTTP clients and (later) database repositories.
+All I/O lives here — external API clients and (later) database repositories.
+- `ApiClients::SpoonacularClient` — HTTP calls to Spoonacular via Faraday
+- `Repositories::RecipeRepository` — translates raw Spoonacular JSON into `Recipe` entities, catches `ExternalApiError` and returns a failure `Result`
 
 > **Autoloading note:** Rails' Zeitwerk loader uses each direct subdirectory of `app/` as a constant namespace root. Files in `app/infrastructure/api_clients/` resolve to `ApiClients::*`, not `Infrastructure::ApiClients::*`. The directory enforces the layer boundary; the module prefix reflects the type.
+
+---
+
+## Request lifecycle: `GET /api/v1/recipes/random`
+
+A concrete walkthrough of how a single request moves through the layers:
+
+```
+HTTP GET /api/v1/recipes/random?tags=vegetarian
+    │
+    ▼
+Api::V1::RecipesController#random          ← Interface
+    │   parses tags, calls the service
+    ▼
+FetchRandomRecipe#call(tags:)              ← Application
+    │   delegates to the repository
+    ▼
+Repositories::RecipeRepository             ← Infrastructure
+    │   calls the client, maps JSON → domain
+    ▼
+ApiClients::SpoonacularClient              ← Infrastructure
+    │   Faraday GET to api.spoonacular.com
+    ▼
+{raw JSON}
+    │
+    ▼ (mapped back up the stack)
+Entities::Recipe + ValueObjects::Ingredient    ← Domain
+    │   wrapped in a Result(success?: true)
+    ▼
+RecipeSerializer.call(recipe)              ← Interface
+    │
+    ▼
+JSON response
+```
+
+Each arrow crosses exactly one layer boundary. On failure (e.g. Spoonacular returns 503), the repository catches the `ExternalApiError`, wraps it in a failure `Result`, and the controller renders a 503 with an error body — no exception ever escapes the layer it originated in.
 
 ---
 
 ## Frontend: Layered Architecture
 
 ```
-Screens  →  Hooks  →  Services  →  Rails API
+Screens  →  Hooks  →  API clients  →  Rails API
     ↓
 Components (presentational only)
 ```
 
 - **Screens** — layout and navigation wiring only
 - **Hooks** — all data fetching, loading/error state, derived state
-- **Services** — the only layer that calls the API; returns typed domain objects
+- **API clients** (in `src/services/`) — the only layer that calls the Rails API; returns typed domain objects. Named "services" in the filesystem to match React Native convention, but they are API clients, not business-operation services like the backend's `app/services/`.
 - **Components** — receive props, emit events, no side effects
 
 ---
