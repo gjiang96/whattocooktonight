@@ -75,12 +75,12 @@ Recipe.select(:id, :title, :cuisine).where(published: true)
 
 ## Controllers
 
-### Thin Controllers — One Use Case Per Action
+### Thin Controllers — One Service Per Action
 
 ```ruby
 # Good
 def create
-  result = UseCases::CreateRecipe.new(repo: recipe_repo).call(params: recipe_params)
+  result = CreateRecipe.new(repo: recipe_repo).call(params: recipe_params)
   result.success? ? render_success(result.value) : render_error(result.error)
 end
 
@@ -180,7 +180,7 @@ before_action :authorize_owner!, only: [:update, :destroy]
 
 ### Single Responsibility
 
-Each class/module does one thing. Controllers route, use cases orchestrate, domain objects represent business concepts.
+Each class/module does one thing. Controllers route, services orchestrate, domain objects represent business concepts.
 
 ### DRY — But Not Premature
 
@@ -262,7 +262,7 @@ Serializers are a common N+1 source. Always check SQL logs when building API res
 
 ### RSpec Standards
 
-- Every use case: unit test covering all success and failure paths
+- Every service: unit test covering all success and failure paths
 - Models: test validations, scopes, and domain methods
 - Requests: test HTTP contract (status codes, response shape) — not business logic
 - Factories with FactoryBot, never fixtures

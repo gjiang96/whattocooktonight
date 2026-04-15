@@ -12,7 +12,7 @@ PROMPT=$(echo "$INPUT" | jq -r '.prompt // ""')
 
 # Detect Rails/Ruby context
 # Triggers on: .rb, .erb, Gemfile, routes, migration, controller, model mentions
-RAILS_PATTERN='(\.rb|\.erb|Gemfile|gemspec|rails|rake|rspec|activerecord|migration|controller|serializer|use_case|domain|repository|sidekiq|rspec)'
+RAILS_PATTERN='(\.rb|\.erb|Gemfile|gemspec|rails|rake|rspec|activerecord|migration|controller|serializer|service|domain|repository|sidekiq|rspec)'
 
 # Detect React Native context
 # Triggers on: .tsx, .ts, .jsx, expo, react-native mentions
@@ -30,7 +30,7 @@ if echo "$PROMPT" | grep -qiE "$RN_PATTERN"; then
 fi
 
 # Also check recently mentioned file paths in the prompt
-if echo "$PROMPT" | grep -qE '\.(rb|erb)$|app/(models|controllers|domain|use_cases|infrastructure|workers|serializers)/'; then
+if echo "$PROMPT" | grep -qE '\.(rb|erb)$|app/(models|controllers|domain|services|infrastructure|workers|serializers)/'; then
   RAILS_MATCH=true
 fi
 

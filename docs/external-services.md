@@ -40,7 +40,7 @@ GET https://api.spoonacular.com/recipes/random
 
 **Rails integration:** `ApiClients::SpoonacularClient` in `app/infrastructure/api_clients/spoonacular_client.rb`.
 
-**Error handling:** Any non-200 response raises `ApiClients::ExternalApiError`. Callers (repositories, use cases) are responsible for catching this and returning an appropriate `Result.failure`.
+**Error handling:** Any non-200 response raises `ApiClients::ExternalApiError`. Callers (repositories, services) are responsible for catching this and returning an appropriate `Result.failure`.
 
 **Gotchas:**
 - `tags` param filters by both cuisine AND diet in a single field — pass `"italian"` or `"vegetarian"` directly as lowercase strings.

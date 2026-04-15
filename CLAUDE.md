@@ -10,7 +10,7 @@ The backend scrapes/fetches recipes, generates meal plans, and produces shopping
 
 Apply these skills automatically — do not wait to be asked:
 
-**When working on any Rails or Ruby file** (`.rb`, `.erb`, `Gemfile`, migrations, controllers, models, use cases, domain objects, serializers, specs):
+**When working on any Rails or Ruby file** (`.rb`, `.erb`, `Gemfile`, migrations, controllers, models, services, domain objects, serializers, specs):
 - Apply the `ruby` skill — idiomatic Ruby 3.x patterns, error handling, performance
 - Apply the `rails-best-practices` skill — N+1 prevention, strong params, security, scopes, testing
 
@@ -30,7 +30,7 @@ This project enforces a strict layered architecture. Keep layers separate — no
 ┌─────────────────────────────────┐
 │         Interface Layer         │  Controllers, Serializers, Jobs
 ├─────────────────────────────────┤
-│        Application Layer        │  Use Cases (app/use_cases/)
+│        Application Layer        │  Services (app/services/)
 ├─────────────────────────────────┤
 │          Domain Layer           │  Entities, Value Objects, Domain Services (app/domain/)
 ├─────────────────────────────────┤
@@ -47,12 +47,12 @@ This project enforces a strict layered architecture. Keep layers separate — no
 - Domain Services: operations that don't belong to a single entity
 - No side effects. Always unit-testable in isolation.
 
-**Application Layer** (`app/use_cases/`)
+**Application Layer** (`app/services/`)
 - Orchestrates domain objects to fulfill a single business operation
 - One class, one public method (`#call`)
 - Handles cross-cutting concerns: transactions, authorization checks, event dispatching
 - Returns a result object (success/failure), never raises for business logic errors
-- Example: `UseCases::GenerateMealPlan`, `UseCases::BuildShoppingList`
+- Example: `FetchRandomRecipe`, `GenerateMealPlan`, `BuildShoppingList`
 
 **Infrastructure Layer** (`app/infrastructure/`)
 - All I/O: database, external APIs, file system
@@ -64,9 +64,9 @@ This project enforces a strict layered architecture. Keep layers separate — no
   The directory structure enforces the layer boundary; the Ruby module prefix reflects the type, not the layer.
 
 **Interface Layer** (controllers, jobs, serializers)
-- Controllers are thin: validate params, call one use case, render result
+- Controllers are thin: validate params, call one service, render result
 - No business logic in controllers
-- Jobs delegate to use cases — they are just async triggers
+- Jobs delegate to services — they are just async triggers
 
 ---
 
@@ -80,7 +80,7 @@ app/
     entities/            # Pure Ruby entity classes
     value_objects/       # Immutable value objects
     services/            # Domain services
-  use_cases/             # One file per use case
+  services/              # One file per service object
   infrastructure/
     repositories/        # ActiveRecord <-> Domain translation
     api_clients/         # External HTTP clients
@@ -97,7 +97,7 @@ app/
 ```ruby
 # Good
 def create
-  result = UseCases::GenerateMealPlan.new(repo: MealPlanRepository.new).call(params: meal_plan_params)
+  result = GenerateMealPlan.new(repo: Repositories::RecipeRepository.new).call(params: meal_plan_params)
   result.success? ? render_success(result.value) : render_error(result.error)
 end
 
@@ -108,7 +108,8 @@ def create
 end
 ```
 
-### Use Cases
+### Services
+- One class per business operation, one public method (`#call`)
 - Always return a result wrapper, never raise for expected failures
 - Use a simple Result type:
 ```ruby
@@ -127,7 +128,7 @@ Result = Struct.new(:success?, :value, :error, keyword_init: true)
 **Framework:** RSpec + FactoryBot + Shoulda Matchers
 
 ### Rules
-- Every use case must have a unit test with all paths covered (success + each failure case)
+- Every service must have a unit test with all paths covered (success + each failure case)
 - Domain objects (entities, value objects, services) must have unit tests — no DB, no mocks of domain
 - Repositories get integration tests against a real test DB — no mocking ActiveRecord
 - Controllers get request specs testing HTTP contract only (status codes, response shape)
@@ -139,18 +140,18 @@ Result = Struct.new(:success?, :value, :error, keyword_init: true)
 ```
 spec/
   domain/          # Pure unit tests, no DB
-  use_cases/       # Unit tests, repositories mocked/stubbed
+  services/        # Unit tests, repositories mocked/stubbed
   infrastructure/  # Integration tests, real DB
   requests/        # API contract tests
   factories/
 ```
 
-### Example Use Case Test Pattern
+### Example Service Test Pattern
 ```ruby
-RSpec.describe UseCases::GenerateMealPlan do
-  subject(:use_case) { described_class.new(recipe_repo: recipe_repo) }
+RSpec.describe GenerateMealPlan do
+  subject(:service) { described_class.new(recipe_repo: recipe_repo) }
 
-  let(:recipe_repo) { instance_double(Infrastructure::Repositories::RecipeRepository) }
+  let(:recipe_repo) { instance_double(Repositories::RecipeRepository) }
 
   describe '#call' do
     context 'when sufficient recipes exist' do
