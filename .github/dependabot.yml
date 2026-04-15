@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # Rails backend gems
+  - package-ecosystem: bundler
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - backend
+    groups:
+      # Bundle minor/patch bumps together to keep PR noise down.
+      # Majors still open their own PR so they get a proper review.
+      rails-ecosystem:
+        patterns:
+          - "rails"
+          - "rails-*"
+          - "action*"
+          - "active*"
+          - "rail*"
+        update-types:
+          - minor
+          - patch
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+
+  # Keep GitHub Actions versions fresh
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - ci

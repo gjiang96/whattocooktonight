@@ -22,6 +22,14 @@
 | SimpleCov | Code coverage (90% minimum enforced) |
 | WebMock | Stub external HTTP in tests — no real network calls |
 
+### Linting & security
+| Gem | Purpose |
+|-----|---------|
+| rubocop-rails-omakase | Style linting using the Rails-team default ruleset |
+| Brakeman | Static security analysis for Rails (SQLi, mass assignment, etc.) — runs nightly |
+
+Gem CVE scanning is handled by GitHub Dependabot alerts (`.github/dependabot.yml`), not by a gem in the bundle.
+
 ---
 
 ## Mobile
@@ -50,3 +58,5 @@
 |------|---------|
 | Homebrew | macOS package manager |
 | PostgreSQL 16 (Homebrew) | Local database server (`brew services start postgresql@16`) |
+| GitHub Actions | CI — PR checks (RSpec + RuboCop) and nightly Brakeman scan |
+| Dependabot | Weekly gem & GitHub Actions version updates; real-time CVE alerts |

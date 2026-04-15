@@ -35,6 +35,12 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
+
+  # Linting / static analysis
+  gem "rubocop-rails-omakase", require: false
+
+  # Security static analysis (runs nightly in CI)
+  gem "brakeman", require: false
 end
 
 group :test do

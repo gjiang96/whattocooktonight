@@ -21,7 +21,7 @@ module ValueObjects
     alias eql? ==
 
     def hash
-      [name, amount, unit].hash
+      [ name, amount, unit ].hash
     end
 
     def to_s
