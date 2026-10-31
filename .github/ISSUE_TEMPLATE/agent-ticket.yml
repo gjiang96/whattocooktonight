@@ -1,0 +1,25 @@
+name: Agent ticket
+description: A short request for koka autodev. The agent refines it into acceptance criteria and a plan for you to approve.
+labels: ["agent-ready"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep it short. Koka's `/refine` adds context, acceptance criteria and an implementation plan, then labels the issue `needs-approval`. Add `approved` when you're happy with it.
+  - type: textarea
+    id: request
+    attributes:
+      label: What do you want?
+      description: The problem or idea, in a sentence or two.
+    validations:
+      required: true
+  - type: textarea
+    id: known
+    attributes:
+      label: Anything you already know
+      description: Where it happens, how you'd approach it, links, screenshots. Optional.
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: Anything the agent should leave alone. Optional.
