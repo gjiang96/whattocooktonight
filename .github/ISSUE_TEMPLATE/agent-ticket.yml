@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Keep it short. Koka's `/refine` adds context, acceptance criteria and an implementation plan, then labels the issue `needs-approval`. Add `approved` when you're happy with it.
+        Keep it short. Koka's `/refine` adds context, acceptance criteria and an implementation plan, then labels the issue `needs-approval`. When you're happy, say go in the koka session (or re-run `/autodev`) and it handles the labels.
   - type: textarea
     id: request
     attributes:
